@@ -238,14 +238,10 @@ Scalability - Production-ready architecture
 
 👥 Team Members
 ```
-Shivam - Full Stack Developer & Database Architect
-
-Sakthi Bala Sundaram - Role
-
-Nishani B - Role
-
+Shivam Jaiswal
+Sakthi Bala Sundaram
+Nishani B 
 Neha RN 
-
 Nimalan
 ```
 
