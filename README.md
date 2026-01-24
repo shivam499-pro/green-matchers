@@ -55,6 +55,7 @@ Green Matchers uses advanced AI and MariaDB vector search to:
 - **✅ WebSocket Notifications** - Live updates
 
 ### 🛠️ TECH STACK ACHIEVEMENTS
+```
 # Multilingual vector model
 model = SentenceTransformer('all-mpnet-base-v2')
 # Trained on 1B+ multilingual sentence pairs
