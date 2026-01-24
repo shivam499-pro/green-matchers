@@ -265,7 +265,7 @@ const Dashboard = () => {
               <div className="space-y-3">
                 {[
                   { action: 'Applied to', company: 'Tata Power Renewables', time: '2 hours ago', type: 'application', color: 'bg-green-500' },
-                  { action: 'Saved job at', company: 'Adani Green Energy', time: '1 day ago', type: 'save', color: 'bg-blue-500' },
+                  { action: 'Savthised job at', company: 'Adani Green Energy', time: '1 day ago', type: 'save', color: 'bg-blue-500' },
                   { action: 'Viewed profile of', company: 'ReNew Power', time: '2 days ago', type: 'view', color: 'bg-purple-500' },
                   { action: 'Updated resume', company: 'Profile', time: '3 days ago', type: 'update', color: 'bg-teal-500' }
                 ].map((activity, index) => (

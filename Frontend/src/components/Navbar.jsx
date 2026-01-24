@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useState } from 'react';
 import LanguageSelector from './LanguageSelector';
+import ThemeToggle from './ThemeToggle';
 
 const Navbar = () => {
   const { user, logout } = useAuth();
@@ -17,13 +18,20 @@ const Navbar = () => {
     setIsMenuOpen(false);
   };
 
+
   const navItems = [
-    { path: '/', label: t('nav.home'), icon: '🏠' },
-    { path: '/job-search', label: t('nav.jobs'), icon: '🔍' },
-    { path: '/dashboard', label: t('nav.dashboard'), icon: '📊' },
-    { path: '/trends', label: t('nav.trends'), icon: '📈' },
-    { path: '/career-path', label: t('nav.careerPath'), icon: '🚀' },
-  ];
+  { path: '/', label: t('nav.home'), icon: '🏠' },
+  { path: '/job-search', label: t('nav.jobs'), icon: '🔍' },
+  { path: '/dashboard', label: t('nav.dashboard'), icon: '📊' },
+  { path: '/trends', label: t('nav.trends'), icon: '📈' },
+  { path: '/career-path', label: t('nav.careerPath'), icon: '🚀' },
+  
+  // NEW BACKEND SHOWCASE ITEMS
+  { path: '/companies', label: '51 Companies', icon: '🏢' },
+  { path: '/languages', label: '10 Languages', icon: '🌐' },
+  { path: '/vector-ai', label: 'Vector AI', icon: '🤖' },
+  { path: '/api-docs', label: 'API Docs', icon: '📚' },
+];
 
   return (
     <>

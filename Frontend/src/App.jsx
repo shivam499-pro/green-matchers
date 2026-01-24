@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { LanguageProvider } from './context/LanguageContext';
+import { ThemeProvider } from './context/ThemeContext';
 import Navbar from './components/Navbar';
 import LoadingSpinner from './components/LoadingSpinner';
 import Toast from './components/Toast';
@@ -11,7 +13,6 @@ function AppContent() {
   const [toast, setToast] = useState(null);
   const { user, login } = useAuth();
   const location = useLocation();
-  const navigate = useNavigate();
 
   // Initialize user from localStorage
   useEffect(() => {
@@ -66,7 +67,7 @@ function AppContent() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #334155 100%)' }}>
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-700 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-300">
       {/* Background Animation - ALWAYS BEHIND EVERYTHING */}
       {location.pathname === '/' && <ParticleBackground />}
       
@@ -94,9 +95,13 @@ function AppContent() {
 
 function App() {
   return (
-    <AuthProvider>
-      <AppContent />
-    </AuthProvider>
+    <ThemeProvider>
+      <LanguageProvider>
+        <AuthProvider>
+          <AppContent />
+        </AuthProvider>
+      </LanguageProvider>
+    </ThemeProvider>
   );
 }
 

@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { useOutletContext } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useState, useEffect } from 'react';
+import BackendStatus from '../components/BackendStatus';
 
 const Home = () => {
   const { user } = useAuth();
@@ -14,7 +15,7 @@ const Home = () => {
     const duration = 2000;
     const steps = 60;
     const interval = duration / steps;
-    
+
     let current = { jobs: 0, companies: 0, users: 0 };
     const increment = {
       jobs: targets.jobs / steps,
@@ -26,7 +27,7 @@ const Home = () => {
       current.jobs = Math.min(current.jobs + increment.jobs, targets.jobs);
       current.companies = Math.min(current.companies + increment.companies, targets.companies);
       current.users = Math.min(current.users + increment.users, targets.users);
-      
+
       setStats({
         jobs: Math.floor(current.jobs),
         companies: Math.floor(current.companies),
@@ -48,7 +49,7 @@ const Home = () => {
       gradient: 'bg-gradient-to-br from-blue-500/10 to-cyan-500/10'
     },
     {
-      icon: '🌍',
+      icon: '🎯',
       title: 'SDG Alignment',
       description: 'Find jobs aligned with UN Sustainable Development Goals for maximum impact',
       color: 'from-emerald-500 to-green-600',
@@ -100,6 +101,14 @@ const Home = () => {
   return (
     <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
       <div className="space-y-32 md:space-y-40">
+
+        {/* Backend Status - CRITICAL ADDITION */}
+        <section className="py-8">
+          <div className="max-w-4xl mx-auto">
+            <BackendStatus />
+          </div>
+        </section>
+
         {/* Hero Section */}
         {user ? (
           <section className="text-center py-12 md:py-20">
@@ -111,7 +120,7 @@ const Home = () => {
                 </div>
               </div>
             </div>
-            
+
             <h2 className="text-5xl md:text-6xl font-extrabold text-white mb-8 leading-tight">
               Welcome back, <br />
               <span className="bg-gradient-to-r from-blue-400 via-cyan-400 to-teal-400 bg-clip-text text-transparent">
@@ -152,7 +161,7 @@ const Home = () => {
                 </div>
               </div>
             </div>
-            
+
             <h1 className="text-6xl md:text-7xl font-extrabold text-white mb-10 leading-tight">
               Your Green Career
               <br />
@@ -161,7 +170,7 @@ const Home = () => {
               </span>
             </h1>
             <p className="text-slate-300 text-xl md:text-2xl mb-16 max-w-4xl mx-auto leading-relaxed">
-              Connect with India's leading sustainable companies and build your career in 
+              Connect with India's leading sustainable companies and build your career in
               <span className="text-emerald-400 font-semibold"> renewable energy </span>
               with AI-powered job matching
             </p>
@@ -207,7 +216,7 @@ const Home = () => {
               Advanced MariaDB analytics combined with cutting-edge AI technology
             </p>
           </div>
-          
+
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {features.map((feature, index) => (
               <div
@@ -215,7 +224,7 @@ const Home = () => {
                 className="group relative glass-effect rounded-3xl p-10 text-center transition-all duration-500 hover:-translate-y-3 hover:shadow-2xl cursor-pointer border border-white/10 overflow-hidden"
               >
                 <div className={`absolute inset-0 ${feature.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`}></div>
-                
+
                 <div className="relative z-10">
                   <div className={`w-20 h-20 mx-auto mb-8 bg-gradient-to-br ${feature.color} rounded-2xl flex items-center justify-center text-4xl shadow-xl group-hover:scale-110 group-hover:rotate-6 transition-all duration-500`}>
                     {feature.icon}
@@ -255,7 +264,7 @@ const Home = () => {
                 className="group relative glass-effect rounded-3xl p-10 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 cursor-pointer border border-white/10 overflow-hidden"
               >
                 <div className={`absolute inset-0 bg-gradient-to-br ${testimonial.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}></div>
-                
+
                 <div className="relative z-10">
                   <div className="flex items-center gap-5 mb-8">
                     <div className={`w-16 h-16 bg-gradient-to-br ${testimonial.color} rounded-2xl flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform`}>
@@ -282,13 +291,13 @@ const Home = () => {
         {!user && (
           <section className="relative glass-effect rounded-3xl p-16 md:p-20 bg-gradient-to-br from-blue-500/20 via-purple-500/10 to-teal-500/20 border-2 border-blue-500/30 overflow-hidden my-8">
             <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-teal-500/10 animate-pulse"></div>
-            
+
             <div className="relative z-10 text-center">
               <h3 className="text-4xl md:text-5xl font-extrabold text-white mb-8">
                 Ready to Make an Impact?
               </h3>
               <p className="text-slate-300 mb-14 text-lg md:text-xl leading-relaxed max-w-3xl mx-auto">
-                Join thousands of professionals building sustainable careers and contributing to 
+                Join thousands of professionals building sustainable careers and contributing to
                 <span className="text-green-400 font-bold"> UN SDG Goals</span>
               </p>
               <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-14">
@@ -309,18 +318,18 @@ const Home = () => {
                   Browse Jobs
                 </Link>
               </div>
-              
+
               <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-slate-300">
                 <div className="flex items-center gap-3 bg-white/5 px-8 py-4 rounded-full">
-                  <span className="text-green-400 text-xl">✓</span> 
+                  <span className="text-green-400 text-xl">✓</span>
                   <span className="font-semibold">Free to join</span>
                 </div>
                 <div className="flex items-center gap-3 bg-white/5 px-8 py-4 rounded-full">
-                  <span className="text-green-400 text-xl">✓</span> 
+                  <span className="text-green-400 text-xl">✓</span>
                   <span className="font-semibold">AI-powered matching</span>
                 </div>
                 <div className="flex items-center gap-3 bg-white/5 px-8 py-4 rounded-full">
-                  <span className="text-green-400 text-xl">✓</span> 
+                  <span className="text-green-400 text-xl">✓</span>
                   <span className="font-semibold">SDG aligned</span>
                 </div>
               </div>

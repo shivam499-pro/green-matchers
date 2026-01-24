@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  green-matchers-backend:
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./Backend/.env
+    environment:
+      - DB_HOST=db
+      - DB_USER=root
+      - DB_PASSWORD=greenmatchers2025
+      - DB_NAME=green_jobs
+      - SECRET_KEY=your-super-secure-secret-key-change-in-production-hackathon2025
+      - DEBUG=false
+    depends_on:
+      - db
+    volumes:
+      - ./Backend/uploads:/app/uploads
+    restart: unless-stopped
+
+  db:
+    image: mariadb:10.11
+    environment:
+      - MYSQL_ROOT_PASSWORD=greenmatchers2025
+      - MYSQL_DATABASE=green_jobs
+      - MYSQL_USER=greenmatchers
+      - MYSQL_PASSWORD=greenmatchers2025
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./Backend/init.sql:/docker-entrypoint-initdb.d/init.sql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: unless-stopped
+
+  green-matchers-frontend:
+    build:
+      context: ./Frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    depends_on:
+      - green-matchers-backend
+    restart: unless-stopped
+
+volumes:
+  mysql_data:
+
+networks:
+  default:
+    name: green-matchers-network

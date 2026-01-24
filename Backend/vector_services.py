@@ -1,6 +1,7 @@
 
 # vector_services.py - UPDATED FOR HACKATHON READINESS
 import mariadb
+import sqlite3
 from sentence_transformers import SentenceTransformer
 import numpy as np
 import json
@@ -12,24 +13,38 @@ load_dotenv()
 
 class GreenJobsVectorService:
     def __init__(self):
-        # Initialize the embedding model (384 dimensions)
-        print("🔄 Loading sentence transformer model...")
-        self.model = SentenceTransformer('all-MiniLM-L6-v2')
-        print("✅ Model loaded successfully!")
-        
-        # Database connection using your existing config
+        # Initialize the enhanced embedding model (768 dimensions - better quality)
+        print("🔄 Loading enhanced sentence transformer model...")
+        self.model = SentenceTransformer('all-mpnet-base-v2')  # Better embeddings!
+        print("✅ Enhanced model loaded successfully!")
+
+        # NEW: Add semantic similarity pipeline
+        from transformers import pipeline
+        print("🔄 Loading semantic similarity pipeline...")
+        self.similarity_pipeline = pipeline(
+            "sentence-similarity",
+            model="sentence-transformers/all-MiniLM-L6-v2"
+        )
+        print("✅ Similarity pipeline loaded!")
+
+        # Database connection - try MariaDB first, fallback to SQLite
+        self.use_sqlite = False
         try:
             self.conn = mariadb.connect(
-                host='localhost',
-                user='root', 
-                password='Shivam@12345',
-                database='green_jobs',
-                port=3306
+                host=os.getenv('DB_HOST', 'localhost'),
+                user=os.getenv('DB_USER', 'root'),
+                password=os.getenv('DB_PASSWORD', 'greenmatchers2025'),
+                database=os.getenv('DB_NAME', 'green_jobs'),
+                port=int(os.getenv('DB_PORT', 3306))
             )
-            print("✅ Database connection established!")
+            print("✅ MariaDB connection established!")
         except mariadb.Error as e:
-            print(f"❌ Error connecting to MariaDB: {e}")
-            raise
+            print(f"⚠️ MariaDB connection failed: {e}")
+            print("🔄 Falling back to SQLite for development...")
+            self.use_sqlite = True
+            self.conn = sqlite3.connect('Backend/green_jobs.db')
+            self.conn.row_factory = sqlite3.Row
+            print("✅ SQLite connection established!")
     
     def generate_embedding(self, text: str) -> List[float]:
         """Convert text to vector embedding using 384 dimensions"""
@@ -56,23 +71,48 @@ class GreenJobsVectorService:
     def populate_existing_data(self):
         """HACKATHON READY: Add vector embeddings to all existing data"""
         cursor = self.conn.cursor()
-        
+
         print("🚀 Starting vector data population for hackathon...")
-        
-        # Ensure vector columns exist
-        try:
-            cursor.execute("ALTER TABLE careers ADD COLUMN IF NOT EXISTS desc_vector_json TEXT")
-            cursor.execute("ALTER TABLE careers ADD COLUMN IF NOT EXISTS skills_vector_json TEXT")
-            print("✅ Career vector columns ready")
-        except:
-            print("✅ Career vector columns already exist")
-        
-        try:
-            cursor.execute("ALTER TABLE jobs ADD COLUMN IF NOT EXISTS desc_vector_json TEXT")
-            cursor.execute("ALTER TABLE jobs ADD COLUMN IF NOT EXISTS skills_vector_json TEXT") 
-            print("✅ Job vector columns ready")
-        except:
-            print("✅ Job vector columns already exist")
+
+        # Ensure vector columns exist - different syntax for MariaDB vs SQLite
+        if self.use_sqlite:
+            # SQLite syntax
+            try:
+                cursor.execute("ALTER TABLE careers ADD COLUMN desc_vector_json TEXT")
+                print("✅ Career vector columns added (SQLite)")
+            except sqlite3.OperationalError:
+                print("✅ Career vector columns already exist (SQLite)")
+
+            try:
+                cursor.execute("ALTER TABLE careers ADD COLUMN skills_vector_json TEXT")
+            except sqlite3.OperationalError:
+                pass
+
+            try:
+                cursor.execute("ALTER TABLE jobs ADD COLUMN desc_vector_json TEXT")
+                print("✅ Job vector columns added (SQLite)")
+            except sqlite3.OperationalError:
+                print("✅ Job vector columns already exist (SQLite)")
+
+            try:
+                cursor.execute("ALTER TABLE jobs ADD COLUMN skills_vector_json TEXT")
+            except sqlite3.OperationalError:
+                pass
+        else:
+            # MariaDB syntax
+            try:
+                cursor.execute("ALTER TABLE careers ADD COLUMN IF NOT EXISTS desc_vector_json TEXT")
+                cursor.execute("ALTER TABLE careers ADD COLUMN IF NOT EXISTS skills_vector_json TEXT")
+                print("✅ Career vector columns ready (MariaDB)")
+            except:
+                print("✅ Career vector columns already exist (MariaDB)")
+
+            try:
+                cursor.execute("ALTER TABLE jobs ADD COLUMN IF NOT EXISTS desc_vector_json TEXT")
+                cursor.execute("ALTER TABLE jobs ADD COLUMN IF NOT EXISTS skills_vector_json TEXT")
+                print("✅ Job vector columns ready (MariaDB)")
+            except:
+                print("✅ Job vector columns already exist (MariaDB)")
         
         # Populate careers vectors
         print("📊 Vectorizing careers...")
