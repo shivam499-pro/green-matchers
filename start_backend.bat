@@ -1,0 +1,4 @@
+@echo off
+cd apps/backend
+uvicorn app:app --reload --port 8000
+pause

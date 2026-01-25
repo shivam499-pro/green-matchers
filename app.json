@@ -1,0 +1,13 @@
+{
+  "expo": {
+    "name": "green-matchers-monorepo",
+    "slug": "green-matchers-monorepo",
+    "version": "1.0.0",
+    "description": "Green Matchers - AI-Powered Green Jobs Platform (Monorepo)",
+    "sdkVersion": "49.0.0",
+    "platforms": [],
+    "android": {
+      "package": "com.anonymous.greenmatchersmonorepo"
+    }
+  }
+}
