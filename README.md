@@ -103,7 +103,14 @@ All languages are **fully functional** with real-time translation and career rec
 ## 🎨 **Actual Project Screenshots**
 
 ### **🌐 Multi-Language Interface**
+<<<<<<< HEAD
 *(Show actual UI from your project - replace with real screenshots)*
+=======
+![Green Matchers Multi-Language Interface]
+![Uploading Sentence transformer.png…]()
+
+*Multi-language job search interface supporting 10 Indian languages with real-time translation*
+>>>>>>> a53f80751fc7578406196dbf1b303535786e5c90
 
 ### **🤖 AI Career Matching**
 *(Show actual career matching results from your system)*
