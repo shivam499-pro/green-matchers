@@ -114,7 +114,8 @@ graph TD
 ## 🎨 **Actual Project Screenshots**
 
 ### **🌐 Multi-Language Interface**
-*(Show actual UI from your project - replace with real screenshots)*
+![Green Matchers Multi-Language Interface](images/app-screenshot.png)
+*Multi-language job search interface supporting 10 Indian languages with real-time translation*
 
 ### **🤖 AI Career Matching**
 *(Show actual career matching results from your system)*
