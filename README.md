@@ -21,6 +21,9 @@ India's green economy is growing rapidly, but there's a critical gap: **no AI-po
 | Feature | Technology Used | Current Implementation |
 |---------|-----------------|-----------------------|
 | **Vector Search** | MariaDB + SentenceTransformers | ✅ 768-dim embeddings, cosine similarity |
+
+![Sentence Transformer](images/Sentence_Transformer.png)
+*SentenceTransformer model for semantic vector embeddings*
 | **Multi-Language** | Deep Translator + Custom Fallbacks | ✅ 10 Indian languages (see below) |
 | **Career Matching** | Hybrid AI Recommendation Engine | ✅ Skill-to-career mapping |
 | **Resume Parsing** | PDFPlumber + Python-Docx | ✅ Extract skills, experience |
@@ -40,7 +43,13 @@ All languages are **fully functional** with real-time translation and career rec
 - ✅ **Smart Career Matching** - 48 high-demand green career paths
 - ✅ **Vector Search** - Semantic job matching using AI embeddings
 - ✅ **Salary Predictions** - ML-based compensation forecasting
+
+![RandomForestRegressor](images/RandomForestRegressor.png)
+*Random Forest model for salary prediction with confidence intervals*
 - ✅ **Demand Analytics** - Real-time market trend analysis
+
+![Linear Regression](images/Linear_Regression.png)
+*Linear Regression for market trend analysis and forecasting*
 
 #### **🌐 Multi-Language System**
 - ✅ **10 Indian Languages** - Full API translation support
@@ -78,6 +87,9 @@ graph TD
     style E fill:#673AB7,stroke:#5E35B1
 ```
 
+![AI System Architecture](images/AI_system_architecture.png)
+*Detailed AI system architecture with all ML model integrations*
+
 ### **🛠️ Tech Stack**
 
 **Frontend:**
@@ -100,9 +112,19 @@ graph TD
 
 **AI/ML:**
 - SentenceTransformers (all-mpnet-base-v2)
+
+![Sentence Transformer](images/Sentence_Transformer.png)
+
 - scikit-learn 1.7
 - PyTorch 2.8
 - Deep Translator 1.11
+- T5-small
+
+![T5 Small](images/T5_Small.png)
+
+- BART-large-cnn
+
+![BART Large CNN](images/BART_Large_CNN.png)
 
 **Services:**
 - Resume Parser (PDFPlumber)
