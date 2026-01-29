@@ -64,8 +64,22 @@ All languages are **fully functional** with real-time translation and career rec
 
 ## 🏗️ **System Architecture**
 
-![Green Matchers System Architecture](images/system-architecture.png)
-*Complete AI-powered architecture with MariaDB vector search, multi-language NLP, and real-time analytics*
+```mermaid
+graph TD
+    A[React Frontend] -->|REST API| B[FastAPI Backend]
+    B -->|SQL Queries| C[MariaDB Database]
+    B -->|Vector Queries| D[MariaDB Vector Plugin]
+    D -->|Embeddings| E[SentenceTransformers]
+    E -->|AI Models| B
+    C -->|Data| B
+    B -->|Responses| A
+
+    style A fill:#4CAF50,stroke:#388E3C
+    style B fill:#2196F3,stroke:#1976D2
+    style C fill:#FF9800,stroke:#F57C00
+    style D fill:#9C27B0,stroke:#7B1FA2
+    style E fill:#673AB7,stroke:#5E35B1
+```
 
 ### **🛠️ Tech Stack**
 
