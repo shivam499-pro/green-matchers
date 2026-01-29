@@ -12,7 +12,7 @@ class TestVectorService:
         embedding = vector_service.generate_embedding(text)
 
         assert isinstance(embedding, list)
-        assert len(embedding) == 384  # SentenceTransformer dimension
+        assert len(embedding) == 768  # SentenceTransformer dimension
         assert all(isinstance(x, float) for x in embedding)
 
     def test_cosine_similarity(self):

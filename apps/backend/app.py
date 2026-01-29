@@ -24,7 +24,6 @@ from functools import wraps, lru_cache
 import io
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
-from sentence_transformers import SentenceTransformer
 from transformers import pipeline
 from diffusers import StableDiffusionPipeline
 from math import radians, sin, cos, sqrt, atan2
@@ -52,7 +51,12 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-print("🚀 Initializing Green Matchers API...")
+print("Initializing Green Matchers API...")
+import sys
+print(f"Python path: {sys.path[:3]}")
+print(f"Current working directory: {os.getcwd()}")
+print(f"__package__: {__package__}")
+print(f"__name__: {__name__}")
 
 # Initialize vector services
 vector_service = None
@@ -62,14 +66,15 @@ test_vector_functionality = None
 def get_vector_service():
     global vector_service, initialize_vector_data, test_vector_functionality
     if vector_service is None:
+        print("Attempting to import vector services...")
         try:
-            from vector_services import vector_service as vs, initialize_vector_data as ivd, test_vector_functionality as tvf
+            from .services.vector_services import vector_service as vs, initialize_vector_data as ivd, test_vector_functionality as tvf
             vector_service = vs
             initialize_vector_data = ivd
             test_vector_functionality = tvf
-            print("✅ Vector services loaded!")
+            print("Vector services loaded successfully!")
         except Exception as e:
-            print(f"⚠️ Vector services not available: {e}")
+            print(f"Warning: Vector services not available: {e}")
             return None
     return vector_service
 
@@ -81,35 +86,39 @@ trend_analyzer = None
 job_enhancer = None
 
 try:
-    from services.resume_parser import ResumeParser
-    resume_parser = ResumeParser()
-    print("✅ Resume Parser loaded!")
+    print("Attempting to import Resume Parser...")
+    from .services.resume_parser import AdvancedResumeParser
+    print("Resume Parser imported, creating instance...")
+    resume_parser = AdvancedResumeParser()
+    print("Resume Parser loaded successfully!")
 except Exception as e:
-    print(f"⚠️ Resume Parser failed: {e}")
+    print(f"Resume Parser failed: {e}")
+    import traceback
+    traceback.print_exc()
 
 try:
-    from services.recommendation_engine import RecommendationEngine
+    from .services.recommendation_engine import RecommendationEngine
     recommendation_engine = RecommendationEngine()
     print("✅ Recommendation Engine loaded!")
 except Exception as e:
-    print(f"⚠️ Recommendation Engine failed: {e}")
+    print(f"Warning: Recommendation Engine failed: {e}")
 
 try:
-    from services.salary_predictor import SalaryPredictor
+    from .services.salary_predictor import SalaryPredictor
     salary_predictor = SalaryPredictor()
     print("✅ Salary Predictor loaded!")
 except Exception as e:
     print(f"⚠️ Salary Predictor failed: {e}")
 
 try:
-    from services.trend_analyzer import TrendAnalyzer
+    from .services.trend_analyzer import TrendAnalyzer
     trend_analyzer = TrendAnalyzer()
     print("✅ Trend Analyzer loaded!")
 except Exception as e:
     print(f"⚠️ Trend Analyzer failed: {e}")
 
 try:
-    from services.job_enhancer import JobEnhancer
+    from .services.job_enhancer import JobEnhancer
     job_enhancer = JobEnhancer()
     print("✅ Job Enhancer loaded!")
 except Exception as e:
@@ -190,9 +199,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-limiter = Limiter(key_func=get_remote_address)
-app.state.limiter = limiter
-app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+# limiter = Limiter(key_func=get_remote_address)
+# app.state.limiter = limiter
+# app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 # MariaDB configuration
 db_config = {
@@ -206,16 +215,16 @@ db_config = {
 def get_db_connection():
     try:
         conn = mariadb.connect(**db_config)
-        setattr(conn, 'is_mariadb', True)  # Mark as MariaDB connection
+        conn.is_mariadb = True  # Mark as MariaDB connection
         return conn
     except mariadb.Error as e:
-        logger.error(f"Error connecting to MariaDB: {e}")
+        logger.info(f"MariaDB connection failed (expected in development): {e}")
         logger.info("Falling back to SQLite for development...")
         try:
             import sqlite3
-            conn = sqlite3.connect('green_jobs.db')
+            conn = sqlite3.connect('apps/backend/green_jobs.db')
             conn.row_factory = sqlite3.Row
-            setattr(conn, 'is_mariadb', False)  # Mark as SQLite connection
+            conn.is_mariadb = False  # Mark as SQLite connection
             return conn
         except Exception as sqlite_error:
             logger.error(f"SQLite fallback also failed: {sqlite_error}")
@@ -304,7 +313,6 @@ HINDI_JOBS = {
 }
 
 # Global AI Models
-model = None
 generator = None
 sd_pipe = None
 
@@ -827,21 +835,12 @@ def get_cached_jobs(query: Optional[QueryInput] = None):
 
 # Load AI Models
 def load_models():
-    global model, generator, sd_pipe, semantic_similarity_pipeline
+    global generator, sd_pipe
     print("🔄 Loading AI Models...")
-    model = SentenceTransformer('multi-qa-mpnet-base-dot-v1')
     generator = pipeline("text-generation", model="gpt2", max_new_tokens=100, truncation=True)
     sd_pipe = StableDiffusionPipeline.from_pretrained("CompVis/stable-diffusion-v1-4", safety_checker=None)
     sd_pipe = sd_pipe.to("cpu")
-    
-    # Initialize semantic similarity pipeline with correct task
-    try:
-        semantic_similarity_pipeline = pipeline("feature-extraction", model="sentence-transformers/all-MiniLM-L6-v2")
-        print("✅ Semantic similarity pipeline loaded!")
-    except Exception as e:
-        print(f"⚠️ Semantic similarity pipeline failed: {e}")
-        semantic_similarity_pipeline = None
-    
+
     print("✅ AI Models Loaded!")
 
 # Initialize Database
@@ -1187,7 +1186,7 @@ def get_current_user(token: str = Depends(oauth2_scheme)):
 # =============================================================================
 
 @app.post("/api/translate")
-@limiter.limit("30/minute")
+# # @limiter.limit("30/minute")
 async def api_translate(request: Request, translate_data: TranslateInput, current_user: dict = Depends(get_current_user)):
     """Translate single text - FIXED FOR 10 LANGUAGES"""
     try:
@@ -1259,7 +1258,7 @@ async def api_translate(request: Request, translate_data: TranslateInput, curren
         }
 
 @app.post("/api/translate/batch")
-@limiter.limit("20/minute")
+# # @limiter.limit("20/minute")
 async def api_translate_batch(request: Request, batch_data: BatchTranslateInput, current_user: dict = Depends(get_current_user)):
     """Translate multiple texts at once - FIXED FOR 10 LANGUAGES"""
     try:
@@ -1337,7 +1336,7 @@ async def api_translate_batch(request: Request, batch_data: BatchTranslateInput,
         }
 
 @app.post("/api/career/recommendations")
-@limiter.limit("10/minute")
+# @limiter.limit("10/minute")
 async def enhanced_career_recommendations(request: Request, career_data: CareerRecommendationsInput, current_user: dict = Depends(get_current_user)):
     """Enhanced career recommendations with translation - FIXED FOR 10 LANGUAGES"""
     try:
@@ -1553,7 +1552,7 @@ async def get_supported_languages(current_user: dict = Depends(get_current_user)
     }
 
 @app.post("/api/jobs/search")
-@limiter.limit("10/minute")
+# @limiter.limit("10/minute")
 async def enhanced_job_search(request: Request, query: QueryInput, current_user: dict = Depends(get_current_user)):
     """Enhanced job search with language translation - SUPPORTS ALL 10 LANGUAGES"""
     start_time = time.time()
@@ -1663,7 +1662,7 @@ async def enhanced_job_search(request: Request, query: QueryInput, current_user:
 # =============================================================================
 
 @app.post("/api/vector/jobs/search")
-@limiter.limit("10/minute")
+# @limiter.limit("10/minute")
 async def mariadb_vector_job_search(request: Request, query: QueryInput, current_user: dict = Depends(get_current_user)):
     """Job search using MariaDB native VECTOR_DISTANCE - SHOWCASES MARIADB VECTOR CAPABILITIES"""
     try:
@@ -1725,7 +1724,7 @@ async def mariadb_vector_job_search(request: Request, query: QueryInput, current
         raise HTTPException(status_code=500, detail=f"Vector search failed: {str(e)}")
 
 @app.post("/api/vector/careers/recommend")
-@limiter.limit("10/minute")
+# @limiter.limit("10/minute")
 async def mariadb_vector_career_recommendations(request: Request, career_data: CareerRecommendationsInput, current_user: dict = Depends(get_current_user)):
     """Career recommendations using MariaDB native vector similarity"""
     try:
@@ -1885,7 +1884,7 @@ async def vector_demo():
             "tables": ["careers", "jobs", "users"]
         },
         "ai_capabilities": {
-            "embedding_model": "multi-qa-mpnet-base-dot-v1",
+            "embedding_model": "all-mpnet-base-v2",
             "vector_generation": "Active",
             "similarity_search": "Ready",
             "semantic_matching": "Implemented"
@@ -1899,7 +1898,7 @@ async def vector_demo():
     }
 
 @app.post("/api/vector/jobs/semantic")
-@limiter.limit("10/minute")
+# @limiter.limit("10/minute")
 async def semantic_job_search(request: Request, query: QueryInput, current_user: dict = Depends(get_current_user)):
     """Semantic job search using AI vectors - HACKATHON DEMO"""
     try:
@@ -1963,7 +1962,7 @@ async def semantic_job_search(request: Request, query: QueryInput, current_user:
         raise HTTPException(status_code=500, detail=f"Semantic search error: {str(e)}")
 
 @app.post("/api/vector/careers/semantic") 
-@limiter.limit("10/minute")
+# @limiter.limit("10/minute")
 async def semantic_career_recommendations(request: Request, career_data: CareerRecommendationsInput, current_user: dict = Depends(get_current_user)):
     """AI-powered career recommendations using vector similarity"""
     try:
@@ -2026,7 +2025,7 @@ async def semantic_career_recommendations(request: Request, career_data: CareerR
 
 
 @app.post("/api/vector/jobs/semantic-search")
-@limiter.limit("10/minute")
+# @limiter.limit("10/minute")
 async def hackathon_semantic_job_search(request: Request, query: QueryInput, current_user: dict = Depends(get_current_user)):
     """🚀 HACKATHON READY: AI-Powered Semantic Job Search"""
     try:
@@ -2053,7 +2052,7 @@ async def hackathon_semantic_job_search(request: Request, query: QueryInput, cur
         raise HTTPException(status_code=500, detail=f"Semantic search error: {str(e)}")
 
 @app.post("/api/vector/careers/semantic-recommendations") 
-@limiter.limit("10/minute")
+# # @limiter.limit("10/minute")
 async def hackathon_semantic_careers(request: Request, career_data: CareerRecommendationsInput, current_user: dict = Depends(get_current_user)):
     """🚀 HACKATHON READY: AI-Powered Career Recommendations"""
     try:
@@ -2090,7 +2089,7 @@ async def hackathon_vector_demo():
             "approach": "Hybrid - MariaDB JSON + Python AI"
         },
         "ai_capabilities": {
-            "embedding_model": "all-MiniLM-L6-v2",
+            "embedding_model": "all-mpnet-base-v2",
             "vector_generation": "Active",
             "similarity_search": "Ready",
             "semantic_matching": "Implemented"
@@ -2168,7 +2167,7 @@ async def hackathon_vector_test(test_data: dict):
 # =============================================================================
 
 @app.post("/api/ai/resume/analyze")
-@limiter.limit("5/minute")
+# # @limiter.limit("5/minute")
 async def analyze_resume_ai(
     request: Request,
     file: UploadFile,
@@ -2213,8 +2212,9 @@ async def analyze_resume_ai(
         raise HTTPException(status_code=500, detail=f"Resume analysis failed: {str(e)}")
 
 @app.post("/api/ai/recommendations/personalized")
-@limiter.limit("10/minute")
+# @limiter.limit("10/minute")
 async def get_personalized_recommendations(
+    request: Request,
     user_profile: dict,
     current_user: dict = Depends(get_current_user)
 ):
@@ -2252,7 +2252,7 @@ async def get_personalized_recommendations(
         raise HTTPException(status_code=500, detail="Recommendation generation failed")
 
 @app.post("/api/ai/career/skill-gap")
-@limiter.limit("10/minute")
+# @limiter.limit("10/minute")
 async def analyze_skill_gap(
     gap_request: dict,
     current_user: dict = Depends(get_current_user)
@@ -2280,7 +2280,7 @@ async def analyze_skill_gap(
         raise HTTPException(status_code=500, detail="Skill gap analysis failed")
 
 @app.post("/api/ai/salary/predict")
-@limiter.limit("10/minute")
+# @limiter.limit("10/minute")
 async def predict_salary_ai(
     job_features: dict,
     current_user: dict = Depends(get_current_user)
@@ -2306,7 +2306,7 @@ async def predict_salary_ai(
         raise HTTPException(status_code=500, detail="Salary prediction failed")
 
 @app.get("/api/ai/trends/skills")
-@limiter.limit("10/minute")
+# @limiter.limit("10/minute")
 async def get_skill_trends_ai(
     months: int = 6,
     current_user: dict = Depends(get_current_user)
@@ -2333,7 +2333,7 @@ async def get_skill_trends_ai(
         raise HTTPException(status_code=500, detail="Skill trends analysis failed")
 
 @app.post("/api/ai/jobs/enhance")
-@limiter.limit("5/minute")
+# # @limiter.limit("5/minute")
 async def enhance_job_description(
     job_data: dict,
     current_user: dict = Depends(get_current_user)
@@ -2364,7 +2364,7 @@ async def enhance_job_description(
         raise HTTPException(status_code=500, detail="Job enhancement failed")
 
 @app.get("/api/ai/dashboard/insights")
-@limiter.limit("10/minute")
+# @limiter.limit("10/minute")
 async def get_ai_dashboard_insights(
     current_user: dict = Depends(get_current_user)
 ):
@@ -2448,7 +2448,7 @@ async def get_ai_system_status():
 
 # EXISTING ENDPOINTS (keep all your existing endpoints below)
 @app.post("/match_jobs")
-@limiter.limit("10/minute")
+# @limiter.limit("10/minute")
 async def match_jobs(request: Request, query: QueryInput, current_user: dict = Depends(get_current_user)):
     start_time = time.time()
     user_city = get_city_from_ip(request.client.host)
@@ -3577,7 +3577,7 @@ cache_lock = asyncio.Lock()
 # =============================================================================
 
 @app.post("/api/career/skill-gap-analysis")
-@limiter.limit("10/minute")
+# @limiter.limit("10/minute")
 async def skill_gap_analysis(
     request: Request,
     gap_data: SkillGapInput, 
@@ -3617,7 +3617,7 @@ async def skill_gap_analysis(
         raise HTTPException(status_code=500, detail="Skill gap analysis failed")
 
 @app.post("/api/career/learning-path")
-@limiter.limit("10/minute")
+# @limiter.limit("10/minute")
 async def get_learning_path(
     request: Request,
     learning_data: LearningPathInput,
@@ -3642,7 +3642,7 @@ async def get_learning_path(
         raise HTTPException(status_code=500, detail="Learning path generation failed")
 
 @app.get("/api/career/progression/{career_id}")
-@limiter.limit("10/minute")
+# @limiter.limit("10/minute")
 async def get_career_progression(
     request: Request,
     career_id: int,
@@ -3662,7 +3662,7 @@ async def get_career_progression(
 # =============================================================================
 
 @app.get("/api/companies/{company_id}")
-@limiter.limit("10/minute")
+# @limiter.limit("10/minute")
 async def get_company_profile(
     request: Request,
     company_id: int,
@@ -3678,7 +3678,7 @@ async def get_company_profile(
         raise HTTPException(status_code=500, detail="Company profile unavailable")
 
 @app.post("/api/employer/company-profile")
-@limiter.limit("5/minute")
+# @limiter.limit("5/minute")
 async def update_company_profile(
     request: Request,
     profile_data: CompanyProfile,
@@ -3696,7 +3696,7 @@ async def update_company_profile(
         raise HTTPException(status_code=500, detail="Company profile update failed")
 
 @app.post("/api/employer/jobs/bulk")
-@limiter.limit("5/minute")
+# @limiter.limit("5/minute")
 async def bulk_job_post(
     request: Request,
     jobs_data: BulkJobCreate,
@@ -3714,7 +3714,7 @@ async def bulk_job_post(
         raise HTTPException(status_code=500, detail="Bulk job posting failed")
 
 @app.get("/api/employer/pipeline")
-@limiter.limit("10/minute")
+# @limiter.limit("10/minute")
 async def get_candidate_pipeline(
     request: Request,
     current_user: dict = Depends(get_current_user)
@@ -3735,7 +3735,7 @@ async def get_candidate_pipeline(
 # =============================================================================
 
 @app.get("/api/analytics/salary-trends")
-@limiter.limit("10/minute")
+# @limiter.limit("10/minute")
 async def get_salary_trends(
     request: Request,
     role: str = None,
@@ -3752,7 +3752,7 @@ async def get_salary_trends(
         raise HTTPException(status_code=500, detail="Salary trends data unavailable")
 
 @app.get("/api/analytics/skill-demand")
-@limiter.limit("10/minute")
+# @limiter.limit("10/minute")
 async def get_skill_demand(
     request: Request,
     skill: str = None,
@@ -3768,7 +3768,7 @@ async def get_skill_demand(
         raise HTTPException(status_code=500, detail="Skill demand data unavailable")
 
 @app.get("/api/analytics/market-report")
-@limiter.limit("5/minute")
+# @limiter.limit("5/minute")
 async def generate_market_report(
     request: Request,
     industry: str = "renewable-energy",
@@ -4084,15 +4084,6 @@ def init_db():
     global salary_model
     salary_model = train_salary_predictor()
     return True
-
-def load_models():
-    global model, generator, sd_pipe
-    print("🔄 Loading AI Models...")
-    model = SentenceTransformer('multi-qa-mpnet-base-dot-v1')
-    generator = pipeline("text-generation", model="gpt2", max_new_tokens=100, truncation=True)
-    sd_pipe = StableDiffusionPipeline.from_pretrained("CompVis/stable-diffusion-v1-4", safety_checker=None)
-    sd_pipe = sd_pipe.to("cpu")
-    print("✅ AI Models Loaded!")
 
 # WebSocket Manager
 class ConnectionManager:

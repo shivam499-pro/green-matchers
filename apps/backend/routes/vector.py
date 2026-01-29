@@ -101,7 +101,7 @@ async def hackathon_vector_demo():
             "approach": "Hybrid - MariaDB JSON + Python AI"
         },
         "ai_capabilities": {
-            "embedding_model": "all-MiniLM-L6-v2",
+            "embedding_model": "all-mpnet-base-v2",
             "vector_generation": "Active",
             "similarity_search": "Ready",
             "semantic_matching": "Implemented"
