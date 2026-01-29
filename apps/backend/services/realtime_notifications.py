@@ -410,7 +410,7 @@ class AdvancedRealtimeNotifications:
     async def _find_similar_jobs(self, job_data: Dict) -> List[Dict]:
         """Find similar jobs for recommendations"""
         try:
-            from ..vector_services import vector_service
+            from .vector_services import vector_service
             similar_jobs = vector_service.semantic_search_jobs(
                 job_data.get('skills', ''),
                 top_k=3

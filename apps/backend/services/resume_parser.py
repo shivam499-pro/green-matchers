@@ -14,7 +14,7 @@ class AdvancedResumeParser:
         """Initialize the advanced resume parser with NLP capabilities"""
         try:
             self.nlp = spacy.load("en_core_web_sm")
-            print("✅ SpaCy model loaded successfully!")
+            print("SpaCy model loaded successfully!")
         except OSError:
             print("⚠️ SpaCy model not found, downloading...")
             os.system("python -m spacy download en_core_web_sm")
@@ -218,7 +218,7 @@ class AdvancedResumeParser:
             skill_text = "general professional skills"
 
         # Import vector service for embedding
-        from ..vector_services import vector_service
+        from .vector_services import vector_service
         return vector_service.generate_embedding(skill_text)
 
     def analyze_resume(self, file_path: str) -> Dict[str, Any]:
@@ -283,7 +283,7 @@ class AdvancedResumeParser:
         resume_vector = resume_analysis["skill_vector"]
         matches = []
 
-        from ..vector_services import vector_service
+        from .vector_services import vector_service
 
         for job in jobs_data:
             if 'skill_vector' in job:

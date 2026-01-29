@@ -220,13 +220,13 @@ class AdvancedRecommendationEngine:
 
     def _get_user_skill_vector(self, skills: List[str]) -> List[float]:
         """Generate vector representation of user skills"""
-        from ..vector_services import vector_service
+        from .vector_services import vector_service
         skill_text = " ".join(skills) if skills else "general professional skills"
         return vector_service.generate_embedding(skill_text)
 
     def _calculate_similarity(self, vec1, vec2) -> float:
         """Calculate cosine similarity between vectors"""
-        from ..vector_services import vector_service
+        from .vector_services import vector_service
         return vector_service.cosine_similarity(vec1, vec2)
 
     def _calculate_confidence(self, similarity: float) -> str:
@@ -268,7 +268,7 @@ class AdvancedRecommendationEngine:
         if not profile_text.strip():
             profile_text = "general professional background"
 
-        from ..vector_services import vector_service
+        from .vector_services import vector_service
         return vector_service.generate_embedding(profile_text)
 
     def _calculate_experience_career_fit(self, user_years: int, career_level: str) -> float:

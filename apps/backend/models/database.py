@@ -2,11 +2,12 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
+from typing import Generator
 from ..config import settings
 import mariadb
 
-# SQLAlchemy setup
-DATABASE_URL = f"mysql+pymysql://{settings.db_user}:{settings.db_password}@{settings.db_host}:{settings.db_port}/{settings.db_name}"
+# SQLAlchemy setup - Use SQLite for development
+DATABASE_URL = "sqlite:///./green_jobs.db"
 
 engine = create_engine(
     DATABASE_URL,
@@ -18,7 +19,7 @@ engine = create_engine(
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
-def get_db() -> Session:
+def get_db() -> Generator[Session, None, None]:
     """Dependency to get database session"""
     db = SessionLocal()
     try:

@@ -1,6 +1,6 @@
 # services/vector.py
 from typing import List, Dict, Any
-from ..vector_services import vector_service
+from .vector_services import vector_service
 
 class VectorService:
     """Wrapper service for vector operations"""

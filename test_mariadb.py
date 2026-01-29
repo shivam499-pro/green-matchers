@@ -1,7 +1,7 @@
 import mariadb
 try:
     # Connect without specifying database
-    conn = mariadb.connect(user="root", password="pass", host="localhost", port=3306)
+    conn = mariadb.connect(user="root", password="greenmatchers2025", host="localhost", port=3306)
     cursor = conn.cursor()
 
     # Create database

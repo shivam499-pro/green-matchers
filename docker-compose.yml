@@ -3,12 +3,12 @@ version: '3.8'
 services:
   green-matchers-backend:
     build:
-      context: ./Backend
+      context: ./apps/backend
       dockerfile: Dockerfile
     ports:
       - "8000:8000"
     env_file:
-      - ./Backend/.env
+      - ./apps/backend/.env
     environment:
       - DB_HOST=db
       - DB_USER=root
@@ -19,27 +19,27 @@ services:
     depends_on:
       - db
     volumes:
-      - ./Backend/uploads:/app/uploads
+      - ./apps/backend/uploads:/app/uploads
     restart: unless-stopped
 
   db:
     image: mariadb:10.11
     environment:
-      - MYSQL_ROOT_PASSWORD=greenmatchers2025
-      - MYSQL_DATABASE=green_jobs
-      - MYSQL_USER=greenmatchers
-      - MYSQL_PASSWORD=greenmatchers2025
+      - MARIADB_ROOT_PASSWORD=greenmatchers2025
+      - MARIADB_DATABASE=green_jobs
+      - MARIADB_USER=greenmatchers
+      - MARIADB_PASSWORD=greenmatchers2025
     ports:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
-      - ./Backend/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./apps/backend/init.sql:/docker-entrypoint-initdb.d/init.sql
     command: --default-authentication-plugin=mysql_native_password
     restart: unless-stopped
 
   green-matchers-frontend:
     build:
-      context: ./Frontend
+      context: ./apps/web
       dockerfile: Dockerfile
     ports:
       - "3000:80"

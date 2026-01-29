@@ -269,7 +269,7 @@ class AdvancedVoiceSearch:
         """Perform job search based on voice parameters"""
         try:
             # Import vector service for search
-            from ..vector_services import vector_service
+            from .vector_services import vector_service
 
             query = parameters.get('query', '')
             filters = parameters.get('filters', {})
