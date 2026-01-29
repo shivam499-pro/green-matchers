@@ -1,4 +1,4 @@
-<img width="1536" height="1024" alt="ChatGPT Image Jan 29, 2026, 10_33_49 PM" src="https://github.com/user-attachments/assets/f0ff4d43-57f7-41bc-97ab-e6b2b76f8050" /># 🌱 Green Matchers - AI-Powered Green Jobs Platform
+# 🌱 Green Matchers - AI-Powered Green Jobs Platform
 
 **[📖 Project Documentation](#-project-documentation) | [🛠️ Technical Details](#-technical-details) | [🚀 Getting Started](#-getting-started) | [👥 Team](#-team)**
 
