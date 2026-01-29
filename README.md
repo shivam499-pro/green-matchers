@@ -1,4 +1,4 @@
-# 🌱 Green Matchers - AI-Powered Green Jobs Platform
+<img width="1536" height="1024" alt="ChatGPT Image Jan 29, 2026, 10_33_49 PM" src="https://github.com/user-attachments/assets/f0ff4d43-57f7-41bc-97ab-e6b2b76f8050" /># 🌱 Green Matchers - AI-Powered Green Jobs Platform
 
 **[📖 Project Documentation](#-project-documentation) | [🛠️ Technical Details](#-technical-details) | [🚀 Getting Started](#-getting-started) | [👥 Team](#-team)**
 
@@ -114,7 +114,9 @@ graph TD
 ## 🎨 **Actual Project Screenshots**
 
 ### **🌐 Multi-Language Interface**
-![Green Matchers Multi-Language Interface](images/app-screenshot.png)
+![Green Matchers Multi-Language Interface]
+![Uploading Sentence transformer.png…]()
+
 *Multi-language job search interface supporting 10 Indian languages with real-time translation*
 
 ### **🤖 AI Career Matching**
