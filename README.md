@@ -22,8 +22,7 @@ India's green economy is growing rapidly, but there's a critical gap: **no AI-po
 |---------|-----------------|-----------------------|
 | **Vector Search** | MariaDB + SentenceTransformers | ✅ 768-dim embeddings, cosine similarity |
 
-![Sentence Transformer](images/Sentence_Transformer.png)
-*SentenceTransformer model for semantic vector embeddings*
+[📊 View SentenceTransformer Architecture](images/Sentence_Transformer.png)
 | **Multi-Language** | Deep Translator + Custom Fallbacks | ✅ 10 Indian languages (see below) |
 | **Career Matching** | Hybrid AI Recommendation Engine | ✅ Skill-to-career mapping |
 | **Resume Parsing** | PDFPlumber + Python-Docx | ✅ Extract skills, experience |
@@ -44,12 +43,10 @@ All languages are **fully functional** with real-time translation and career rec
 - ✅ **Vector Search** - Semantic job matching using AI embeddings
 - ✅ **Salary Predictions** - ML-based compensation forecasting
 
-![RandomForestRegressor](images/RandomForestRegressor.png)
-*Random Forest model for salary prediction with confidence intervals*
+[📊 View RandomForestRegressor Model](images/RandomForestRegressor.png)
 - ✅ **Demand Analytics** - Real-time market trend analysis
 
-![Linear Regression](images/Linear_Regression.png)
-*Linear Regression for market trend analysis and forecasting*
+[📊 View Linear Regression Model](images/Linear_Regression.png)
 
 #### **🌐 Multi-Language System**
 - ✅ **10 Indian Languages** - Full API translation support
@@ -87,8 +84,7 @@ graph TD
     style E fill:#673AB7,stroke:#5E35B1
 ```
 
-![AI System Architecture](images/AI_system_architecture.png)
-*Detailed AI system architecture with all ML model integrations*
+[📊 View Complete AI System Architecture](images/AI_system_architecture.png)
 
 ### **🛠️ Tech Stack**
 
@@ -111,20 +107,12 @@ graph TD
 - Full-text search
 
 **AI/ML:**
-- SentenceTransformers (all-mpnet-base-v2)
-
-![Sentence Transformer](images/Sentence_Transformer.png)
-
+- SentenceTransformers (all-mpnet-base-v2) [📊 View Architecture](images/Sentence_Transformer.png)
 - scikit-learn 1.7
 - PyTorch 2.8
 - Deep Translator 1.11
-- T5-small
-
-![T5 Small](images/T5_Small.png)
-
-- BART-large-cnn
-
-![BART Large CNN](images/BART_Large_CNN.png)
+- T5-small [📊 View Architecture](images/T5_Small.png)
+- BART-large-cnn [📊 View Architecture](images/BART_Large_CNN.png)
 
 **Services:**
 - Resume Parser (PDFPlumber)
