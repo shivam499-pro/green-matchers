@@ -16,6 +16,9 @@ India's green economy is growing rapidly, but there's a critical gap: **no AI-po
 
 **Green Matchers** is an **AI-powered career platform** that uses **MariaDB vector search** and **multi-lingual NLP** to connect job seekers with **sustainable green careers** in **10 Indian languages**.
 
+![Green Matchers Platform Overview](images/platform-overview.png)
+*AI-powered career matching platform connecting sustainable job opportunities across India*
+
 ### **🤖 Core AI Features**
 
 | Feature | Technology Used | Current Implementation |
@@ -61,22 +64,8 @@ All languages are **fully functional** with real-time translation and career rec
 
 ## 🏗️ **System Architecture**
 
-```mermaid
-graph TD
-    A[React Frontend] -->|REST API| B[FastAPI Backend]
-    B -->|SQL Queries| C[MariaDB Database]
-    B -->|Vector Queries| D[MariaDB Vector Plugin]
-    D -->|Embeddings| E[SentenceTransformers]
-    E -->|AI Models| B
-    C -->|Data| B
-    B -->|Responses| A
-
-    style A fill:#4CAF50,stroke:#388E3C
-    style B fill:#2196F3,stroke:#1976D2
-    style C fill:#FF9800,stroke:#F57C00
-    style D fill:#9C27B0,stroke:#7B1FA2
-    style E fill:#673AB7,stroke:#5E35B1
-```
+![Green Matchers System Architecture](images/system-architecture.png)
+*Complete AI-powered architecture with MariaDB vector search, multi-language NLP, and real-time analytics*
 
 ### **🛠️ Tech Stack**
 
@@ -114,8 +103,7 @@ graph TD
 ## 🎨 **Actual Project Screenshots**
 
 ### **🌐 Multi-Language Interface**
-![Green Matchers Multi-Language Interface](images/app-screenshot.png)
-*Multi-language job search interface supporting 10 Indian languages with real-time translation*
+*(Show actual UI from your project - replace with real screenshots)*
 
 ### **🤖 AI Career Matching**
 *(Show actual career matching results from your system)*
