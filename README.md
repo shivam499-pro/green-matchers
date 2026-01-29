@@ -16,9 +16,6 @@ India's green economy is growing rapidly, but there's a critical gap: **no AI-po
 
 **Green Matchers** is an **AI-powered career platform** that uses **MariaDB vector search** and **multi-lingual NLP** to connect job seekers with **sustainable green careers** in **10 Indian languages**.
 
-![Green Matchers Platform Overview](images/platform-overview.png)
-*AI-powered career matching platform connecting sustainable job opportunities across India*
-
 ### **🤖 Core AI Features**
 
 | Feature | Technology Used | Current Implementation |
