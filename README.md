@@ -39,6 +39,7 @@ All languages are **fully functional** with real-time translation and career rec
 ### **✅ Core Features Delivered**
 
 #### **🤖 AI Career Engine**
+
 - ✅ **Smart Career Matching** - 48 high-demand green career paths
 - ✅ **Vector Search** - Semantic job matching using AI embeddings
 - ✅ **Salary Predictions** - ML-based compensation forecasting
@@ -49,17 +50,20 @@ All languages are **fully functional** with real-time translation and career rec
 [📊 View Linear Regression Model](images/Linear_Regression.png)
 
 #### **🌐 Multi-Language System**
+
 - ✅ **10 Indian Languages** - Full API translation support
 - ✅ **Real-time Translation** - AI-powered content adaptation
 - ✅ **Cultural Context** - Region-specific career recommendations
 
 #### **🔐 Authentication & Security**
+
 - ✅ **JWT Security** - Production-ready authentication
 - ✅ **Role Management** - Job Seeker, Employer, Admin roles
 - ✅ **User Profiles** - Complete profile management
 - ✅ **Resume Processing** - PDF/DOCX upload and parsing
 
 #### **💼 Job Ecosystem**
+
 - ✅ **Job Applications** - One-click apply with tracking
 - ✅ **Employer Dashboard** - Full employer management
 - ✅ **Real-time Search** - Advanced filters and AI matching
@@ -88,11 +92,16 @@ graph TD
 
 ### **🛠️ Tech Stack**
 
-**Frontend:**
+**Web Frontend:**
 - React 18 + Vite 4
 - Tailwind CSS 3
 - Axios for API calls
 - React Router v6
+
+**Mobile App:**
+- React Native
+- TypeScript
+- Expo
 
 **Backend:**
 - FastAPI 0.118
@@ -120,21 +129,30 @@ graph TD
 - Salary Predictor (Linear Regression)
 - Trend Analyzer (Time Series)
 - Job Enhancer (NLP-based)
+- **BART Compression Engine** (Active - Text Summarization)
+
+**Monorepo:**
+- Turborepo for build orchestration
+- Shared packages (API)
 
 ## 🎨 **Actual Project Screenshots**
 
 ### **🌐 Multi-Language Interface**
-*Multi-language job search interface supporting 10 Indian languages with real-time translation*
+
+Multi-language job search interface supporting 10 Indian languages with real-time translation*
 
 
 ### **🤖 AI Career Matching**
-*(Show actual career matching results from your system)*
+
+(Show actual career matching results from your system)*
 
 ### **💼 Job Search with Vector AI**
-*(Show actual job search interface and results)*
+
+(Show actual job search interface and results)*
 
 ### **📊 Real-time Analytics Dashboard**
-*(Show actual analytics dashboard from your project)*
+
+(Show actual analytics dashboard from your project)*
 
 ## 🚀 **Getting Started**
 
@@ -146,17 +164,23 @@ git clone https://github.com/shivam499-pro/green-matchers.git
 cd green-matchers
 
 # 2. Backend setup
-cd Backend
+cd apps/backend
 pip install -r requirements.txt
-uvicorn app:app --reload
+uvicorn main:app --reload
 
-# 3. Frontend setup (in another terminal)
-cd ../Frontend
+# 3. Web Frontend setup (in another terminal)
+cd ../web
 npm install
 npm run dev
 
-# 4. Access the application
-# Frontend: http://localhost:3000
+# 4. Mobile App setup (optional, in another terminal)
+cd ../mobile
+npm install
+npm run dev
+
+# 5. Access the application
+# Web Frontend: http://localhost:5173
+# Mobile App: http://localhost:8081 (Expo)
 # Backend API: http://localhost:8000
 # API Docs: http://localhost:8000/docs
 ```
@@ -205,30 +229,40 @@ curl -X POST "http://localhost:8000/api/translate" \
 
 ```bash
 green-matchers/
-├── Backend/
-│   ├── app.py                          # FastAPI main application
-│   ├── vector_services.py              # AI Vector Search implementation
-│   ├── requirements.txt                # Python dependencies
-│   ├── .env                            # Environment variables
-│   ├── services/                       # AI services (12 services)
-│   ├── models/                         # Database models
-│   ├── routes/                         # API endpoints
-│   ├── tests/                          # Test suites
-│   └── uploads/                        # Resume storage
+├── apps/
+│   ├── backend/                        # FastAPI Backend
+│   │   ├── main.py                     # FastAPI main application
+│   │   ├── requirements.txt           # Python dependencies
+│   │   ├── .env.example               # Environment variables template
+│   │   ├── services/                   # AI services (12 services)
+│   │   ├── models/                     # Database models
+│   │   ├── routes/                     # API endpoints
+│   │   ├── tests/                      # Test suites
+│   │   └── uploads/                    # Resume storage
+│   │
+│   ├── web/                            # React Web Frontend
+│   │   ├── src/
+│   │   │   ├── components/             # React components (20+)
+│   │   │   ├── pages/                  # Application pages (11 pages)
+│   │   │   ├── translations/           # 10 Language files
+│   │   │   ├── context/                # State management
+│   │   │   ├── hooks/                  # Custom hooks
+│   │   │   └── utils/                  # Utility functions
+│   │   ├── package.json                # Web dependencies
+│   │   ├── vite.config.js              # Vite configuration
+│   │   └── tailwind.config.js          # Tailwind CSS config
+│   │
+│   └── mobile/                         # React Native Mobile App
+│       ├── src/
+│       │   └── components/             # Mobile components (Button, EmptyState, ErrorBoundary)
+│       ├── package.json                # Mobile dependencies
+│       └── tsconfig.json                # TypeScript configuration
 │
-├── Frontend/
-│   ├── src/
-│   │   ├── components/                 # React components (20+)
-│   │   ├── pages/                      # Application pages (11 pages)
-│   │   ├── translations/               # 10 Language files
-│   │   ├── context/                    # State management
-│   │   ├── hooks/                      # Custom hooks
-│   │   └── utils/                      # Utility functions
-│   ├── package.json                    # Frontend dependencies
-│   ├── vite.config.js                  # Vite configuration
-│   └── tailwind.config.js              # Tailwind CSS config
+├── packages/
+│   └── api/                            # Shared API package
 │
 ├── docker-compose.yml                  # Container orchestration
+├── turbo.json                          # Turborepo configuration
 ├── README.md                           # This file
 └── LICENSE                             # MIT License
 ```
@@ -258,10 +292,12 @@ green-matchers/
 - **24 Job Listings** - With real company data
 - **10 Languages** - Fully supported and tested
 - **12 AI Services** - All implemented and working
-- **20+ React Components** - Functional UI elements
-- **11 Application Pages** - Complete user flows
+- **20+ React Components** - Functional UI elements (Web)
+- **3 Mobile Components** - Button, EmptyState, ErrorBoundary (Mobile)
+- **11 Application Pages** - Complete user flows (Web)
 - **50+ API Endpoints** - RESTful architecture
 - **95%+ Test Coverage** - For core functionality
+- **Monorepo Structure** - Turborepo with shared packages
 
 ### **🤖 AI Performance Metrics**
 
@@ -332,7 +368,6 @@ green-matchers/
 
 ```markdown
 🎯 **Advanced AI** - Enhanced matching algorithms
-🔐 **Mobile App** - Native iOS/Android applications
 📊 **Advanced Analytics** - Predictive job market insights
 🌐 **Global Expansion** - Support for more languages
 🤖 **Voice Interface** - Voice-based job search
