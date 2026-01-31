@@ -7,14 +7,12 @@
 This monorepo contains the **complete Green Matchers platform** including:
 - **Backend** (FastAPI)
 - **Web Frontend** (React + Vite)
-- **Mobile App** (React Native)
 - **Shared Packages** (API, UI, Hooks, etc.)
 
 ## 🚀 Monorepo Benefits
 
 ### **1. Code Reusability**
-- **Shared API client** between web and mobile
-- **Shared UI components** with consistent styling
+- **Shared API client** for web applications
 - **Shared business logic** and utilities
 - **Single source of truth** for types and constants
 
@@ -42,8 +40,7 @@ This monorepo contains the **complete Green Matchers platform** including:
 green-matchers/
 ├── apps/
 │   ├── backend/          # FastAPI backend (formerly Backend/)
-│   ├── web/              # React web frontend (formerly Frontend/)
-│   └── mobile/           # React Native mobile app (formerly MobileApp/)
+│   └── web/              # React web frontend (formerly Frontend/)
 ├── packages/
 │   ├── api/              # Shared API client
 │   ├── ui/               # Shared UI components
@@ -79,12 +76,6 @@ green-matchers/
 - **Tailwind CSS** - Styling
 - **React Router** - Navigation
 
-### **Mobile App**
-- **React Native** - Cross-platform mobile
-- **Expo** - Development tooling
-- **React Navigation** - Mobile navigation
-- **i18next** - Internationalization
-
 ## 🚀 Getting Started
 
 ### **1. Install Dependencies**
@@ -104,7 +95,6 @@ npm run dev
 # Or start specific app
 cd apps/backend && uvicorn app:app --reload
 cd apps/web && npm run dev
-cd apps/mobile && expo start
 ```
 
 ### **3. Build for Production**
@@ -114,13 +104,12 @@ npm run build
 
 # Or build specific app
 cd apps/web && npm run build
-cd apps/mobile && expo build:android
 ```
 
 ## 📦 Shared Packages
 
 ### **1. @green-matchers/api**
-**Shared API client** for both web and mobile apps.
+**Shared API client** for web applications.
 
 **Features:**
 - Singleton API client instance
@@ -142,7 +131,7 @@ const response = await apiClient.get(API_ENDPOINTS.CAREER_RECOMMENDATIONS);
 ```
 
 ### **2. @green-matchers/ui**
-**Shared UI components** that work on both web and mobile.
+**Shared UI components** for web applications.
 
 **Components:**
 - `Button` - Consistent buttons
@@ -271,7 +260,7 @@ import { Button } from '@green-matchers/ui';
 ### **3. Performance**
 - **Code splitting** for web
 - **Tree shaking** for smaller bundles
-- **Lazy loading** for mobile
+- **Lazy loading** for web
 - **Optimized builds** with Turborepo
 
 ## 📄 License

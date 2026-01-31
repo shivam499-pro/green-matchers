@@ -1,5 +1,5 @@
 # routes/system.py
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Request, Depends
 from sqlalchemy.orm import Session
 from ..models.database import get_db, get_mariadb_connection
 from ..models.user import User

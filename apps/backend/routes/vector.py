@@ -1,5 +1,5 @@
 # routes/vector.py
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, HTTPException, Request, Depends
 from pydantic import BaseModel
 from typing import List, Optional, Dict, Any
 

@@ -14,15 +14,10 @@ class AdvancedJobEnhancer:
             self.enhancer_tokenizer = AutoTokenizer.from_pretrained(model_name)
             self.enhancer_model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
 
-            # Alternative: Use simpler summarization pipeline
-            self.summarizer = pipeline(
-                "summarization",
-                model="facebook/bart-large-cnn",
-                tokenizer="facebook/bart-large-cnn"
-            )
+            # Note: BART compression moved to dedicated BARTCompressionEngine service
 
             self.is_initialized = True
-            print("✅ Advanced Job Enhancer initialized with T5 + BART models!")
+            print("✅ Advanced Job Enhancer initialized with T5 model!")
         except Exception as e:
             print(f"⚠️ Job enhancer initialization failed: {e}")
             print("🔄 Falling back to rule-based enhancement")

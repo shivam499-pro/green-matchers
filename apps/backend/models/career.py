@@ -24,6 +24,10 @@ class Career(Base):
     desc_vector_json = Column(Text)  # JSON string of description vector
     skills_vector_json = Column(Text)  # JSON string of skills vector
 
+    # BART compression fields
+    insights_summary = Column(Text)  # Compressed career insights
+    insights_generated_at = Column(DateTime(timezone=True))  # When insights were generated
+
     # Relationships
     skills = relationship("CareerSkill", back_populates="career")
 

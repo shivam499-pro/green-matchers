@@ -81,7 +81,7 @@ class AdvancedRealtimeNotifications:
         # Start background tasks
         self._start_background_tasks()
 
-        print("✅ Advanced Real-time Notifications initialized!")
+        print("Advanced Real-time Notifications initialized!")
 
     def _start_background_tasks(self):
         """Start background notification processing tasks"""

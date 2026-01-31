@@ -1,5 +1,7 @@
 {
-    "python-envs.pythonProjects": [],
-    "java.compile.nullAnalysis.mode": "automatic",
+    "java.project.excludedPaths": [],
+    "java.files.exclude": {},
+    "gradle.nestedProjects": false,
+    "gradle.autoDetect": "off",
     "java.configuration.updateBuildConfiguration": "interactive"
 }

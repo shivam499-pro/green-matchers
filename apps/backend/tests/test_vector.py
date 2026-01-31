@@ -2,7 +2,7 @@
 Tests for vector search functionality
 """
 import pytest
-from vector_services import vector_service, initialize_vector_data, test_vector_functionality
+from services.vector_services import vector_service, initialize_vector_data, test_vector_functionality
 import numpy as np
 
 class TestVectorService:

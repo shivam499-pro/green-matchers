@@ -11,6 +11,8 @@ from ..models.user import User
 from ..models.job import Job, Application, Company, EmployerProfile
 from ..services.auth import AuthService
 from ..services.translation import TranslationService
+from ..services.bart_compression import BARTCompressionEngine
+from datetime import datetime
 
 router = APIRouter()
 
@@ -234,6 +236,24 @@ async def create_job(
     db.commit()
     db.refresh(new_job)
 
+    # Generate BART job summary asynchronously (don't block job creation)
+    try:
+        bart_engine = BARTCompressionEngine()
+        if bart_engine.is_initialized:
+            # Run in background to avoid blocking
+            import asyncio
+            asyncio.create_task(
+                bart_engine.compress_job_description({
+                    'title': job_data.title,
+                    'description': job_data.description,
+                    'skills': job_data.skills
+                }).add_done_callback(
+                    lambda task: update_job_summary(db, new_job.job_id, task.result())
+                )
+            )
+    except Exception as e:
+        print(f"⚠️ Failed to start BART job compression: {e}")
+
     return {
         "message": "Job posted successfully",
         "job_id": new_job.job_id,
@@ -336,3 +356,16 @@ async def enhanced_job_search_v2(
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Enhanced search failed: {str(e)}")
+
+def update_job_summary(db: Session, job_id: int, summary: str):
+    """Update job with BART-generated summary"""
+    try:
+        job = db.query(Job).filter(Job.job_id == job_id).first()
+        if job:
+            job.job_summary = summary
+            job.summary_generated_at = datetime.utcnow()
+            db.commit()
+            print(f"✅ BART summary generated for job {job_id}")
+    except Exception as e:
+        print(f"⚠️ Failed to update job summary: {e}")
+        db.rollback()

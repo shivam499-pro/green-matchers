@@ -36,6 +36,8 @@ import shutil
 from pathlib import Path
 import requests
 import numpy as np
+from sqlalchemy.orm import Session
+from .models.database import get_db
 
 # Load environment variables
 load_dotenv()
@@ -99,32 +101,41 @@ except Exception as e:
 try:
     from .services.recommendation_engine import RecommendationEngine
     recommendation_engine = RecommendationEngine()
-    print("✅ Recommendation Engine loaded!")
+    print("Recommendation Engine loaded!")
 except Exception as e:
     print(f"Warning: Recommendation Engine failed: {e}")
 
 try:
     from .services.salary_predictor import SalaryPredictor
     salary_predictor = SalaryPredictor()
-    print("✅ Salary Predictor loaded!")
+    print("Salary Predictor loaded!")
 except Exception as e:
-    print(f"⚠️ Salary Predictor failed: {e}")
+    print(f"Warning: Salary Predictor failed: {e}")
 
 try:
     from .services.trend_analyzer import TrendAnalyzer
     trend_analyzer = TrendAnalyzer()
-    print("✅ Trend Analyzer loaded!")
+    print("Trend Analyzer loaded!")
 except Exception as e:
-    print(f"⚠️ Trend Analyzer failed: {e}")
+    print(f"Warning: Trend Analyzer failed: {e}")
 
 try:
-    from .services.job_enhancer import JobEnhancer
-    job_enhancer = JobEnhancer()
-    print("✅ Job Enhancer loaded!")
+    from .services.job_enhancer import AdvancedJobEnhancer
+    job_enhancer = AdvancedJobEnhancer()
+    print("Job Enhancer loaded!")
 except Exception as e:
-    print(f"⚠️ Job Enhancer failed: {e}")
+    print(f"Warning: Job Enhancer failed: {e}")
 
-print("🎉 AI Services initialization complete!")
+# Initialize BART Compression Engine
+bart_compression = None
+try:
+    from .services.bart_compression import BARTCompressionEngine
+    bart_compression = BARTCompressionEngine()
+    print("BART Compression Engine loaded!")
+except Exception as e:
+    print(f"Warning: BART Compression Engine failed: {e}")
+
+print("AI Services initialization complete!")
 
 
 # Password hashing
@@ -2171,7 +2182,8 @@ async def hackathon_vector_test(test_data: dict):
 async def analyze_resume_ai(
     request: Request,
     file: UploadFile,
-    current_user: dict = Depends(get_current_user)
+    current_user: dict = Depends(get_current_user),
+    db: Session = Depends(get_db)
 ):
     """🎯 AI-POWERED RESUME ANALYSIS - Extracts skills, experience, and generates recommendations"""
     if not resume_parser:
@@ -2186,6 +2198,16 @@ async def analyze_resume_ai(
         # Analyze with AI
         analysis = resume_parser.analyze_resume(file_path)
 
+        # Generate BART resume summary for recruiters
+        resume_summary = None
+        try:
+            from .services.bart_compression import BARTCompressionEngine
+            bart_engine = BARTCompressionEngine()
+            if bart_engine.is_initialized:
+                resume_summary = await bart_engine.compress_resume_to_recruiter_summary(analysis)
+        except Exception as e:
+            print(f"⚠️ BART resume compression failed: {e}")
+
         # Get job matches based on resume
         jobs_data = get_cached_jobs()  # Get all jobs
         job_matches = resume_parser.get_job_matches(analysis, jobs_data)
@@ -2193,9 +2215,22 @@ async def analyze_resume_ai(
         # Clean up temp file
         os.remove(file_path)
 
+        # Save resume summary to user profile if available
+        if resume_summary:
+            try:
+                from .models.user import UserProfile
+                profile = db.query(UserProfile).filter(UserProfile.user_id == current_user['user_id']).first()
+                if profile:
+                    profile.resume_summary = resume_summary
+                    profile.resume_summary_generated_at = datetime.utcnow()
+                    db.commit()
+            except Exception as e:
+                print(f"⚠️ Failed to save resume summary: {e}")
+
         return {
             "resume_analysis": analysis,
             "job_matches": job_matches[:5],  # Top 5 matches
+            "recruiter_summary": resume_summary,  # BART-generated summary
             "ai_insights": {
                 "strengths": [skill for skill in analysis["skills"]["technical"] if len(skill.split()) > 1],
                 "career_readiness": f"{analysis['resume_score']}% match rate",
@@ -2428,11 +2463,15 @@ async def get_ai_system_status():
             "job_enhancer": {
                 "status": "✅ Active" if job_enhancer else "❌ Failed",
                 "enhancement_types": ["Title", "Description", "Requirements", "Benefits"]
+            },
+            "bart_compression": {
+                "status": "✅ Active" if bart_compression and bart_compression.is_initialized else "❌ Failed",
+                "use_cases": ["Job Description Summaries", "Resume Summaries", "Career Insights"]
             }
         },
-        "total_ai_services": 6,
+        "total_ai_services": 7,
         "active_services": sum(1 for svc in [vector_service, resume_parser, recommendation_engine,
-                                           salary_predictor, trend_analyzer, job_enhancer] if svc),
+                                           salary_predictor, trend_analyzer, job_enhancer, bart_compression] if svc),
         "hackathon_ready": True,
         "message": "🎉 All AI services implemented and ready for demonstration!"
     }
@@ -4020,7 +4059,7 @@ async def get_skill_demand_data(skill: str, timeframe: str) -> dict:
 async def generate_market_intelligence_report(industry: str) -> dict:
     """Generate market intelligence report"""
     # Mock implementation - replace with actual market analysis
-    return {
+    base_report = {
         "industry": industry,
         "report_date": datetime.utcnow().strftime("%Y-%m-%d"),
         "executive_summary": "Strong growth in renewable energy sector with increasing investments",
@@ -4036,7 +4075,7 @@ async def generate_market_intelligence_report(industry: str) -> dict:
         },
         "salary_benchmarks": {
             "entry_level": "₹6-9 LPA",
-            "mid_level": "₹12-20 LPA", 
+            "mid_level": "₹12-20 LPA",
             "senior_level": "₹25-40 LPA"
         },
         "skill_gap_analysis": {
@@ -4050,6 +4089,22 @@ async def generate_market_intelligence_report(industry: str) -> dict:
             {"company": "ReNew Power", "openings": 95, "focus": "Wind Energy"}
         ]
     }
+
+    # Generate BART insights summary
+    try:
+        from .services.bart_compression import BARTCompressionEngine
+        bart_engine = BARTCompressionEngine()
+        if bart_engine.is_initialized:
+            insights_text = await bart_engine.compress_career_insights({
+                'market_intelligence': base_report['executive_summary'],
+                'trend_analysis': f"Hiring trends: {base_report['hiring_trends']['growth_rate']} growth, {base_report['hiring_trends']['total_openings']} openings",
+                'salary_insights': f"Salary benchmarks: Entry {base_report['salary_benchmarks']['entry_level']}, Mid {base_report['salary_benchmarks']['mid_level']}, Senior {base_report['salary_benchmarks']['senior_level']}"
+            })
+            base_report['bart_insights'] = insights_text
+    except Exception as e:
+        print(f"⚠️ BART career insights failed: {e}")
+
+    return base_report
 
 
 # ... [ALL YOUR EXISTING TRANSLATION FUNCTIONS AND ENDPOINTS] ...

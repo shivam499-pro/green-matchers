@@ -43,6 +43,10 @@ class UserProfile(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
+    # BART compression fields
+    resume_summary = Column(Text)  # Compressed resume for recruiters
+    resume_summary_generated_at = Column(DateTime(timezone=True))  # When summary was generated
+
     # Relationships
     user = relationship("User", back_populates="profile")
 
